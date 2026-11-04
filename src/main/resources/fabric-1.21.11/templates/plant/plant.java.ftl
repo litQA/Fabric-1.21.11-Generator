@@ -396,6 +396,9 @@ public class ${name}Block extends ${getPlantClass(data.plantType)}Block <#if int
 		}
 	</#if>
 
+	@Environment(EnvType.CLIENT) public static void registerRenderLayer() {
+		BlockRenderLayerMap.putBlock(${JavaModName}Blocks.${REGISTRYNAME}, ChunkSectionLayer.CUTOUT);
+	}
 	<#if data.hasSpecialInformation(w)>
 	public static class Item extends <#if data.isDoubleBlock()>DoubleHigh</#if>BlockItem {
 

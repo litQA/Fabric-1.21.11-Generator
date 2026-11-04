@@ -750,6 +750,12 @@ public class ${getClassName()}Block extends ${getBlockClass(data.blockBase)}
 		</#if>
 	</#list>
 
+	<#if data.transparencyType != "SOLID" || data.hasTransparency>
+	@Environment(EnvType.CLIENT) public static void registerRenderLayer() {
+		BlockRenderLayerMap.putBlock(${JavaModName}Blocks.${REGISTRYNAME},
+			<#if data.transparencyType == "TRANSLUCENT">ChunkSectionLayer.TRANSLUCENT<#else>ChunkSectionLayer.CUTOUT</#if>);
+	}
+	</#if>
 	<#if data.hasSpecialInformation(w) && !(var_extends_class??)> <#-- Do not generate item class for secondary block templates -->
 	public static class Item extends <#if data.isDoubleBlock()>DoubleHighBlock<#elseif data.blockBase! == "Sign">Sign<#elseif data.blockBase! == "HangingSign">HangingSign<#else>Block</#if>Item {
 

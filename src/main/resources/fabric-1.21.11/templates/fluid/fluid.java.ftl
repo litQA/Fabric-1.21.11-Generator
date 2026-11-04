@@ -205,6 +205,7 @@ public abstract class ${name}Fluid extends FlowingFluid {
 				</#if>
 			</#if>
 		));
+		BlockRenderLayerMap.putFluids(ChunkSectionLayer.TRANSLUCENT, ${JavaModName}Fluids.${REGISTRYNAME}, ${JavaModName}Fluids.FLOWING_${REGISTRYNAME});
 	}
 }</@javacompress>
 <#-- @formatter:on -->

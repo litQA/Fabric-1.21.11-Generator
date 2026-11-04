@@ -106,16 +106,22 @@ public class ${JavaModName}Blocks {
 		return (B) Blocks.register(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(${JavaModName}.MODID, name)), (Function<BlockBehaviour.Properties, Block>) supplier, BlockBehaviour.Properties.of());
 	}
 
-	<#if hasTintedBlocks>
 	public static void clientLoad() {
 		<#list blocks as block>
-			<#if block.getModElement().getTypeString() == "block" || block.getModElement().getTypeString() == "plant">
+			<#if block.getModElement().getTypeString() == "block">
+				<#if block.transparencyType != "SOLID" || block.hasTransparency>
+					${block.getModElement().getName()}Block.registerRenderLayer();
+				</#if>
 				<#if block.tintType != "No tint">
-					 ${block.getModElement().getName()}Block.blockColorLoad();
+					${block.getModElement().getName()}Block.blockColorLoad();
+				</#if>
+			<#elseif block.getModElement().getTypeString() == "plant">
+				${block.getModElement().getName()}Block.registerRenderLayer();
+				<#if block.tintType != "No tint">
+					${block.getModElement().getName()}Block.blockColorLoad();
 				</#if>
 			</#if>
 		</#list>
 	}
-	</#if>
 }
 <#-- @formatter:on -->

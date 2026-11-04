@@ -116,7 +116,7 @@ public class ${JavaModName}Variables {
 	<#if w.hasVariablesOfScope("GLOBAL_WORLD") || w.hasVariablesOfScope("GLOBAL_MAP")>
 	public static class WorldVariables extends SavedData {
 
-		public static final SavedDataType<WorldVariables> TYPE = new SavedDataType<>("${modid}:worldvars", WorldVariables::new,
+		public static final SavedDataType<WorldVariables> TYPE = new SavedDataType<>("${modid}_worldvars", WorldVariables::new,
 				CompoundTag.CODEC.xmap(
 				tag -> {
 					WorldVariables instance = new WorldVariables();
@@ -170,7 +170,7 @@ public class ${JavaModName}Variables {
 
 	public static class MapVariables extends SavedData {
 
-		public static final SavedDataType<MapVariables> TYPE = new SavedDataType<>("${modid}:mapvars", MapVariables::new,
+		public static final SavedDataType<MapVariables> TYPE = new SavedDataType<>("${modid}_mapvars", MapVariables::new,
 				CompoundTag.CODEC.xmap(
 				tag -> {
 					MapVariables instance = new MapVariables();
