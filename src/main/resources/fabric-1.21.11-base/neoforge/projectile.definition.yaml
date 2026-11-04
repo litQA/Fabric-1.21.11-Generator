@@ -1,0 +1,10 @@
+# Base types this element provides (core reads them from here since the third 2026.3 snapshot)
+base_types:
+  - entity
+
+templates:
+  - template: projectile/projectile.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/entity/@NAMEEntity.java"
+  - template: projectile/projectile_renderer.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/client/renderer/@NAMERenderer.java"
+    condition: isCustomModel()

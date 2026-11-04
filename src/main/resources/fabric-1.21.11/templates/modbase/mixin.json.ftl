@@ -1,0 +1,41 @@
+<#assign mixins = ['LivingEntityMixin', 'PlayerMixin', 'ItemStackMixin', 'BlockItemMixin', 'BoneMealItemMixin', 'CommandsMixin', 'ExperienceOrbMixin']>
+<#assign client_mixins = []>
+<#if types.biomes?filter(e -> e.spawnBiome || e.spawnInCaves || e.spawnBiomeNether)?size != 0>
+  <#assign mixins = mixins + ['NoiseGeneratorSettingsMixin', 'BiomeSourcePresetMixin', 'LevelStorageSourceMixin']>
+</#if>
+<#if types.items?has_content>
+	<#assign mixins = mixins + ['RepairItemRecipeMixin']>
+	<#assign mixins = mixins + ['ServerPlayerMixin']>
+</#if>
+<#if types.attributes?has_content>
+	<#assign mixins = mixins + ['AttributeSupplierAccessor']>
+</#if>
+<#if types.armors?has_content>
+	<#assign mixins = mixins + ['PiglinAiMixin']>
+	<#assign client_mixins = client_mixins + ['EquipmentLayerRendererMixin']>
+</#if>
+<#if types.livingentities?filter(e -> e.spawnInDungeons)?size != 0>
+	<#assign mixins = mixins + ['MonsterRoomFeatureMixin']>
+</#if>
+<#if types.tools?filter(e -> e.toolType.equals('Shears'))?size != 0>
+	<#assign mixins = mixins + ['SheepMixin']>
+</#if>
+<#if types.blocks?filter(e -> e.enchantPowerBonus gt 0)?size gt 0>
+	<#assign mixins = mixins + ['EnchantmentMenuMixin']>
+</#if>
+{
+  "required": true,
+  "package": "${package}.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "${modid}.refmap.json",
+  "mixins": [
+	<#list mixins as mixin>"${mixin}"<#sep>,</#list>
+  ],
+  "client": [
+	<#list client_mixins as mixin>"${mixin}"<#sep>,</#list>
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8.4"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "generator-fabric-1.21.11",
+  "weight": 10,
+  "supportedversions": [202600344621, 202600399999],
+  "info": {
+    "name": "Minecraft Fabric 1.21.11 Generator",
+    "version": "2026.3-1.0.7-beta",
+    "description": "Fabric generator for Minecraft 1.21.11 adapted to MCreator 2026.3 (EAP 2026.3.44621).",
+    "author": "LitQA",
+    "credits": "Adapted from Goldorion's Fabric-Generator-MCreator sources (1.21.8 / 26.1.2 / 26.3 lines)."
+  }
+}

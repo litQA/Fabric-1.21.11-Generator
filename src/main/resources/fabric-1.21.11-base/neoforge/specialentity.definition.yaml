@@ -1,0 +1,32 @@
+# Base types this element provides (core reads them from here since the third 2026.3 snapshot)
+base_types:
+  - item
+  - entity
+
+templates:
+  - template: specialentity/specialentity.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/entity/@NAMEEntity.java"
+  - template: json/special_entity_item.json.ftl
+    writer: json
+    name: "@MODASSETSROOT/models/item/@registryname.json"
+  - template: json/model_item.json.ftl
+    writer: json
+    name: "@MODASSETSROOT/items/@registryname.json"
+
+# Dispense behaviors are controlled by generator.yaml
+
+tags:
+  - tag: ENTITIES:minecraft:boat
+    condition: "!isBoatChestVariant()"
+  - tag: ENTITIES:c:boats
+    condition: "isBoatChestVariant()"
+  - tag: ITEMS:minecraft:boats
+    condition: "!isBoatChestVariant()"
+  - tag: ITEMS:minecraft:chest_boats
+    condition: "isBoatChestVariant()"
+
+localizationkeys:
+  - key: entity.@modid.@registryname
+    mapto: name
+  - key: item.@modid.@registryname
+    mapto: name

@@ -1,0 +1,229 @@
+import java.security.MessageDigest
+
+plugins {
+    id "java"
+}
+
+// The generator is a pure resource plugin (templates, definitions, metadata).
+// A Java toolchain is still declared so the build fails fast on an unsupported JDK.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+def pluginVersion = providers.gradleProperty("pluginVersion").get()
+def mcVersion = providers.gradleProperty("mcVersion").get()
+def fabricApiVersion = providers.gradleProperty("fabricApiVersion").get()
+def fabricLoaderVersion = providers.gradleProperty("fabricLoaderVersion").get()
+def archiveName = "generator-fabric-${mcVersion}.zip"
+
+group = "net.mcreator.generator.fabric"
+version = pluginVersion
+base.archivesName = "generator-fabric-${mcVersion}"
+
+tasks.named("processResources") {
+    // plugin.json, generator.yaml and templates are shipped verbatim; no filtering
+    // is applied so that FreeMarker syntax inside templates is preserved.
+    filteringCharset = "UTF-8"
+}
+
+// The installable plugin archive is written to build/dist so that a Gradle "build/" clean and
+// IDE previews of build/libs cannot interfere with it.
+def archiveDir = layout.buildDirectory.dir("dist")
+
+tasks.named("jar") {
+    destinationDirectory.set(archiveDir)
+    archiveFileName.set(archiveName)
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+}
+
+/*
+ * Resource-level validation that does not need MCreator or FreeMarker on the
+ * classpath. The deeper FreeMarker/YAML validation lives in
+ * tools/PluginValidator (invoked by tools/validate.ps1).
+ */
+def resourceRoot = layout.projectDirectory.dir("src/main/resources")
+
+def fatal = { String message ->
+    throw new GradleException("Generator resource validation failed: " + message)
+}
+
+tasks.register("checkPluginResources") {
+    group = "verification"
+    description = "Validates plugin metadata, generator layout and version consistency."
+
+    inputs.dir(resourceRoot)
+    inputs.files("gradle.properties")
+
+    doLast {
+        def resources = resourceRoot.asFile
+        def json = new groovy.json.JsonSlurper().parse(new File(resources, "plugin.json"))
+
+        // --- plugin.json -----------------------------------------------------
+        if (json.id != "generator-fabric-${mcVersion}") {
+            fatal("plugin.json id is '${json.id}', expected 'generator-fabric-${mcVersion}'")
+        }
+        if (json.info?.version != pluginVersion) {
+            fatal("plugin.json info.version '${json.info?.version}' != gradle.properties pluginVersion '${pluginVersion}'")
+        }
+        def supported = (json.supportedversions ?: []).collect { it as long }
+        if (!supported.contains(202600344621L)) {
+            fatal("plugin.json supportedversions ${supported} does not include 202600344621 (MCreator 2026.3.44621)")
+        }
+        def infoName = json.info?.name ?: ""
+        if (!infoName.contains(mcVersion)) {
+            fatal("plugin.json info.name '${infoName}' does not mention Minecraft ${mcVersion}")
+        }
+
+        // --- generator layout ------------------------------------------------
+        def generatorFiles = []
+        resources.eachFileRecurse { file ->
+            if (file.name == "generator.yaml") {
+                generatorFiles << file
+            }
+        }
+        if (generatorFiles.size() != 1) {
+            fatal("expected exactly one generator.yaml, found ${generatorFiles.size()}: ${generatorFiles}")
+        }
+        def generatorFile = generatorFiles[0]
+        def generatorDir = generatorFile.parentFile
+        if (generatorDir.name != "fabric-${mcVersion}") {
+            fatal("generator.yaml must live in fabric-${mcVersion}/, found ${generatorDir.name}/")
+        }
+        def generatorYaml = generatorFile.getText("UTF-8")
+
+        // --- generator.yaml import paths --------------------------------------
+        def importDirs = []
+        def inImport = false
+        generatorYaml.readLines().each { line ->
+            if (line ==~ /^import:\s*/) { inImport = true; return }
+            if (inImport) {
+                if (line ==~ /^\S.*/ && !line.startsWith("  ")) { inImport = false; return }
+                // Only top-level list entries ("  - name"), not nested exclude entries.
+                def m = line =~ /^  - ([A-Za-z0-9_.\-\/]+):?\s*$/
+                if (m.find()) { importDirs << m.group(1) }
+            }
+        }
+        if (importDirs.isEmpty()) {
+            fatal("generator.yaml declares no import entries")
+        }
+        importDirs.each { String importDir ->
+            def target = new File(resources, importDir)
+            if (!target.isDirectory()) {
+                fatal("generator.yaml imports '${importDir}' but src/main/resources/${importDir} is missing")
+            }
+            if (new File(target, "generator.yaml").isFile()) {
+                fatal("imported base layer '${importDir}' must not contain generator.yaml (only the entry generator is discoverable)")
+            }
+        }
+
+        // --- version pins inside the generator --------------------------------
+        def buildfile = (generatorYaml =~ /(?m)^buildfileversion:\s*(\S+)/)
+        if (!buildfile.find() || buildfile.group(1) != fabricApiVersion) {
+            fatal("generator.yaml buildfileversion must equal Fabric API ${fabricApiVersion}")
+        }
+
+        def packMeta = new File(resources, "fabric-${mcVersion}-base/datapack/templates/pack.mcmeta.ftl")
+        if (!packMeta.isFile()) {
+            fatal("pack.mcmeta template is missing: ${packMeta}")
+        }
+        def packText = packMeta.getText("UTF-8")
+        if (!(packText =~ /"min_format":\s*94\.1/) || !(packText =~ /"max_format":\s*94\.1/)) {
+            fatal("pack.mcmeta must declare min_format/max_format 94.1 for Minecraft 1.21.11")
+        }
+
+        def modJson = new File(generatorDir, "templates/modbase/fabric.mod.json.ftl")
+        if (!modJson.isFile()) {
+            fatal("fabric.mod.json template is missing: ${modJson}")
+        }
+        def modJsonText = modJson.getText("UTF-8")
+        if (!modJsonText.contains(">=${fabricLoaderVersion}")) {
+            fatal("fabric.mod.json template must depend on fabricloader >=${fabricLoaderVersion}")
+        }
+        if (!modJsonText.contains('"java": ">=21"')) {
+            fatal("fabric.mod.json template must require java >=21 (Minecraft 1.21.11 runtime is Java 21)")
+        }
+
+        // 1.21.11 is obfuscated: Loom runs the dev environment in the "named" namespace, so the
+        // class tweaker / access widener header must say "named". A 26.x-style "official" header
+        // makes Loom fail with: Namespace mismatch, expected named got official.
+        def accessWidener = new File(generatorDir, "templates/modbase/accesswidener.ftl")
+        if (!accessWidener.isFile()) {
+            fatal("access widener template is missing: ${accessWidener}")
+        }
+        def awHeader = accessWidener.getText("UTF-8").readLines().find { !it.trim().isEmpty() }
+        if (awHeader == null || awHeader.trim() != "classTweaker v1 named") {
+            fatal("class tweaker header must be 'classTweaker v1 named' for obfuscated 1.21.11, found: '${awHeader}'")
+        }
+
+        // --- project decisions: licence, attribution, offline Gradle distribution ---
+        def licenseFile = new File(resources, "LICENSE")
+        if (!licenseFile.isFile() || !licenseFile.getText("UTF-8").contains("Attribution-NonCommercial 4.0 International")) {
+            fatal("LICENSE must contain the CC BY-NC 4.0 text selected for this project")
+        }
+        if (!new File(resources, "NOTICE.md").isFile()) {
+            fatal("NOTICE.md with upstream attribution is required")
+        }
+        def wrapperProps = new File(resources, "fabric-${mcVersion}/workspacebase/gradle/wrapper/gradle-wrapper.properties")
+        if (!wrapperProps.isFile()) {
+            fatal("missing workspace gradle-wrapper.properties")
+        }
+        def wrapperText = wrapperProps.getText("UTF-8")
+        if (!wrapperText.contains('distributionUrl=file\\:///')) {
+            fatal("workspace wrapper must point at the local Gradle distribution (file:///) for offline tests")
+        }
+        if (!wrapperText.contains('# distributionUrl=https\\://services.gradle.org/distributions/gradle-9.8.0-bin.zip')) {
+            fatal("workspace wrapper must keep the public Gradle URL commented")
+        }
+
+        // --- template references declared by definitions ----------------------
+        def allTemplateFiles = [] as Set
+        resources.eachFileRecurse { file ->
+            if (file.isFile()) {
+                allTemplateFiles << file.absolutePath
+            }
+        }
+        def missing = []
+        resources.eachFileRecurse { file ->
+            if (!file.isFile() || !(file.name.endsWith(".yaml"))) {
+                return
+            }
+            def text = file.getText("UTF-8")
+            def matcher = text =~ /(?m)^\s*(?:-\s*)?template:\s*([^\s#]+)/
+            matcher.each { whole, ref ->
+                def name = ref.trim()
+                if (name.isEmpty() || name.startsWith("@")) {
+                    return
+                }
+                boolean found = allTemplateFiles.any { it.replace('\\', '/').endsWith("/" + name) }
+                if (!found) {
+                    missing << "${file.name}: ${name}"
+                }
+            }
+        }
+        if (!missing.isEmpty()) {
+            fatal("definition files reference ${missing.size()} missing template(s):\n  " + missing.take(40).join("\n  "))
+        }
+
+        logger.lifecycle("checkPluginResources: plugin.json, generator layout, versions and ${allTemplateFiles.size()} resources validated")
+    }
+}
+
+tasks.named("check") {
+    dependsOn("checkPluginResources")
+}
+
+// Convenience task: build the installable plugin archive and print its digest.
+tasks.register("packagePlugin") {
+    group = "mcreator_plugins"
+    description = "Builds the installable generator ZIP and prints its SHA-256 digest."
+    dependsOn("build")
+
+    doLast {
+        def archive = new File(project.layout.buildDirectory.get().asFile, "dist/${archiveName}")
+        if (!archive.isFile()) {
+            throw new GradleException("Expected archive ${archive} was not produced")
+        }
+        def digest = MessageDigest.getInstance("SHA-256").digest(archive.bytes)
+        def hex = digest.collect { String.format("%02X", it) }.join()
+        logger.lifecycle("Plugin archive: ${archive}")
+        logger.lifecycle("SHA-256: ${hex}")
+    }
+}

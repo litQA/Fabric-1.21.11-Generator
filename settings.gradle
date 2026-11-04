@@ -1,0 +1,9 @@
+rootProject.name = 'Fabric-Generator-MCreator-1.21.11'
+
+// MCreator sources are only attached when a developer explicitly points
+// mcreator_path at an installation that ships a Gradle project. The default
+// value ("unassigned") keeps this build fully self-contained.
+if (mcreator_path != "unassigned") {
+    include ':MCreator'
+    project(':MCreator').projectDir = file(mcreator_path)
+}
