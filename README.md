@@ -1,4 +1,4 @@
-<img width="1000" height="200" alt="fabric generator banner 1 21 11" src="https://github.com/user-attachments/assets/64b8a675-95d7-4568-9708-b1874f7f938a" />
+<img width="1000"  alt="fabric generator banner 1 21 11" src="https://github.com/user-attachments/assets/64b8a675-95d7-4568-9708-b1874f7f938a" />
 
 # Fabric 1.21.11 generator
 
