@@ -1,4 +1,6 @@
-# Fabric 1.21.11 generator — plugin project
+<img width="1000" height="200" alt="fabric generator banner 1 21 11" src="https://github.com/user-attachments/assets/64b8a675-95d7-4568-9708-b1874f7f938a" />
+
+# Fabric 1.21.11 generator
 
 Self-contained Gradle project that builds `generator-fabric-1.21.11.zip`, an MCreator generator
 plugin for **Minecraft 1.21.11** on **MCreator 2026.3.44621** (`202600344621`).
@@ -95,15 +97,19 @@ enough.
 | Pin | Value | Where |
 |---|---|---|
 | Minecraft | 1.21.11 | `gradle.properties`, `generator.yaml` folder name, workspace dependency |
-| MCreator | 2026.3.44621 (`202600344621`) | `plugin.json`, `gradle.properties` |
 | Fabric Loader | 0.20.1 | `gradle.properties`, `fabric.mod.json.ftl`, workspace build |
 | Fabric API | 0.141.6 | `gradle.properties`, `generator.yaml` `buildfileversion` |
 | Java | 21 (mod bytecode) / 25 (build toolchain) | workspace build, `fabric.mod.json.ftl`, `mixin.json.ftl` |
 | Data pack format | 94.1 | `datapack/templates/pack.mcmeta.ftl` |
-| Class tweaker namespace | `named` | `templates/modbase/accesswidener.ftl` (obfuscated 1.21.11 requires named) |
 
 Changing a pin requires updating the matching file; `checkPluginResources` and
 `PluginValidator` fail the build when the values diverge.
+
+## DSH Empowers Accelerated Plugin Development
+
+<img width="1000" alt="dsh" src="https://github.com/user-attachments/assets/1b0b22c9-5213-48eb-9e51-6de70e852dec" />
+
+This project includes code generated with **DSH (AI)** assistance.
 
 ## Licence
 
@@ -111,8 +117,11 @@ The packaged `LICENSE` is **CC BY-NC 4.0** (project decision). `NOTICE.md` recor
 upstream attribution for Fabric-Generator-MCreator and the MCreator generator resources; keep it
 with every redistribution.
 
-## Documentation
 
-Project documentation lives one level up: `../docs/01-BASELINE-INVENTORY.md` …
-`../docs/07-USER-VERIFICATION.md`, plus `../MIGRATION-REPORT.md`, `../CHANGELOG.md` and
-`../handoff.md`.
+# MCreator - Minecraft Mod Maker
+
+[![MCreator](https://mcreator.net/image/brand/mcreator300s.png)](https://mcreator.net/)
+
+MCreator is an open-source software used to make Minecraft Java Edition mods, Minecraft Bedrock Edition Add-Ons, resource packs, and data packs using an intuitive easy-to-learn interface or with an integrated code editor. It is used worldwide by Minecraft players, aspiring mod developers, for education, online classes, and STEM workshops. 
+
+NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.
