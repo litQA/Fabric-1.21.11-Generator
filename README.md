@@ -1,3 +1,5 @@
+<img width="1000" alt="fabric generator banner 1 21 11" src="https://github.com/user-attachments/assets/b2ff8988-cd71-42c3-9b53-84d1e35ab98f" />
+
 # Fabric 1.21.11 Generator
 
 A Fabric generator for Minecraft 1.21.11. The project produces an installable MCreator generator
@@ -60,3 +62,11 @@ CHANGELOG.md                  release history
 ## License
 
 CC BY-NC 4.0. See `LICENSE` and `NOTICE.md` for attribution.
+
+# MCreator - Minecraft Mod Maker
+
+[![MCreator](https://mcreator.net/image/brand/mcreator300s.png)](https://mcreator.net/)
+
+MCreator is an open-source software used to make Minecraft Java Edition mods, Minecraft Bedrock Edition Add-Ons, resource packs, and data packs using an intuitive easy-to-learn interface or with an integrated code editor. It is used worldwide by Minecraft players, aspiring mod developers, for education, online classes, and STEM workshops. 
+
+NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.
