@@ -85,9 +85,9 @@ variables, configurations, fluids, world generation, procedures and triggers.
 | Item | Value |
 |---|---|
 | Archive | `build/dist/generator-fabric-1.21.11.zip` |
-| Size | 1,238,389 bytes |
+| Size | 1,238,390 bytes |
 | Entries | 2000 |
-| SHA-256 | `17E37F66291D9C35F79224D17B64FE4C69DFFE2FD8EB6F6D2EB89D4A32300FE7` |
+| SHA-256 | `CF39B7E28EC54043C84AF68D9D5E7157A529E9AD6BB79E810BA45928F4F170C3` |
 | License | CC BY-NC 4.0 |
 
 ## 8. Validation commands

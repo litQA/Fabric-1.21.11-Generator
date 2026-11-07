@@ -91,7 +91,8 @@ travel, world load/unload and command parameters. NeoForge-only implementations 
 - Java 21 release/toolchain settings;
 - the `mcreator.gradle` include;
 - mixin refmaps named `<modid>.refmap.json`, matching the generated `mixins.json` and production
-  export requirements.
+  export requirements;
+- workspace archive name kept as `modid`, which MCreator uses to locate the built jar during export.
 
 The Gradle wrapper uses a local distribution by default to keep repeated builds deterministic.
 

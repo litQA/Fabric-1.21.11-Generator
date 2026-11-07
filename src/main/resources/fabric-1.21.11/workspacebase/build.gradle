@@ -3,7 +3,7 @@ plugins {
 }
 
 version = '1.0'
-base.archivesName = "${modid}"
+base.archivesName = "modid"
 
 loom {
     // Minecraft 1.21.11 is the last obfuscated release, so mixin refmaps are

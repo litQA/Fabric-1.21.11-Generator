@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.3-1.0.11
+
+### Fixed
+
+- Workspace archive name restored to `modid`, which MCreator uses to locate the built jar during
+  export. The mixin refmap continues to use the generated mod id (`<modid>.refmap.json`), so
+  exported jars load correctly in production.
 ## 2026.3-1.0.10
 
 ### Fixed
