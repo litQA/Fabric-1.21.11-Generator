@@ -3,14 +3,14 @@ plugins {
 }
 
 version = '1.0'
-base.archivesName = "modid"
+base.archivesName = "${modid}"
 
 loom {
     // Minecraft 1.21.11 is the last obfuscated release, so mixin refmaps are
     // still required for production jars.
     mixin {
         useLegacyMixinAp = true
-        defaultRefmapName = "modid.refmap.json"
+        defaultRefmapName = "${modid}.refmap.json"
     }
 
     if (file("src/main/resources/META-INF/${modid}.classtweaker").exists())

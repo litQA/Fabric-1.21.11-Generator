@@ -89,7 +89,9 @@ travel, world load/unload and command parameters. NeoForge-only implementations 
 - conditional Forge Config API Port and Night Config dependencies when a configuration element is
   generated;
 - Java 21 release/toolchain settings;
-- the `mcreator.gradle` include.
+- the `mcreator.gradle` include;
+- mixin refmaps named `<modid>.refmap.json`, matching the generated `mixins.json` and production
+  export requirements.
 
 The Gradle wrapper uses a local distribution by default to keep repeated builds deterministic.
 

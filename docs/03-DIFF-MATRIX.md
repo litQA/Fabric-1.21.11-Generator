@@ -30,6 +30,7 @@ Fabric 1.21.11 generator. It is intended for reviewers and maintainers.
 | Saved data | `SavedDataType(Identifier, ...)` | `SavedDataType(String, ...)` | variables template |
 | World generation | trapezoid `IntProvider` | uniform `IntProvider` | patch feature placement |
 | Render layers | model-level render type | `BlockRenderLayerMap` | block, plant, fluid, client initialiser |
+| Mixin refmaps | implicit | `<modid>.refmap.json` generated and referenced by `mixins.json` | `workspacebase/build.gradle`, `mixin.json.ftl` |
 
 ## 3. Fabric API matrix
 
