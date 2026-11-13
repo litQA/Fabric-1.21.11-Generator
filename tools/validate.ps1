@@ -13,7 +13,8 @@
 
 .PARAMETER McRoot
     MCreator installation that provides lib/freemarker-*.jar and lib/snakeyaml-engine-*.jar.
-    Defaults to ..\MCreatorEAP2026344621 relative to the workspace root.
+    Defaults to MCREATOR_HOME, or to a single MCreator* directory beside the plugin project.
+    Pass an explicit path when more than one installation is present.
 
 .PARAMETER SkipGradle
     Skips stage 1 (useful when only the Java validator should run).
@@ -31,7 +32,27 @@ $resources = Join-Path $pluginDir 'src\main\resources'
 $buildDir = Join-Path $PSScriptRoot 'build'
 
 if (-not $McRoot) {
-    $McRoot = Join-Path $workspace 'MCreatorEAP2026344621'
+    if ($env:MCREATOR_HOME -and (Test-Path -LiteralPath (Join-Path $env:MCREATOR_HOME 'lib') -PathType Container)) {
+        $McRoot = $env:MCREATOR_HOME
+    }
+}
+if (-not $McRoot) {
+    $candidates = @(Get-ChildItem -LiteralPath $workspace -Directory -Filter 'MCreator*' -ErrorAction SilentlyContinue |
+        Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'lib') -PathType Container })
+    if ($candidates.Count -eq 1) {
+        $McRoot = $candidates[0].FullName
+    } elseif ($candidates.Count -gt 1) {
+        throw "Multiple MCreator installations found. Pass -McRoot or set MCREATOR_HOME to the installation containing lib/."
+    }
+}
+if (-not $McRoot) {
+    throw "MCreator installation not found. Pass -McRoot or set MCREATOR_HOME."
+}
+if (-not (Test-Path -LiteralPath $McRoot -PathType Container)) {
+    throw "MCreator installation not found: $McRoot"
+}
+if (-not (Test-Path -LiteralPath (Join-Path $McRoot 'lib') -PathType Container)) {
+    throw "MCreator installation has no lib directory: $McRoot"
 }
 
 Write-Host "== Fabric 1.21.11 generator validation =="

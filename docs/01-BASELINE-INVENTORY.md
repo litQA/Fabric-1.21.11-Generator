@@ -81,8 +81,9 @@ The plugin is a resource-only MCreator generator:
 - The access widener uses the `named` namespace because Minecraft 1.21.11 is still an obfuscated
   release; Loom runs the development environment in the named namespace.
 - Data-pack format is `94.1` (minimum and maximum).
-- The Gradle wrapper distribution is configurable; the repository ships a local distribution URL with
-  the public URL retained as a comment.
+- The Gradle wrapper uses the official Gradle distribution URL. A local distribution can be selected
+  for offline development by passing an explicit archive to `tools/set-gradle-distribution.ps1`;
+  generated workspace templates always keep the public URL.
 
 ## 7. Related documents
 

@@ -85,10 +85,14 @@ variables, configurations, fluids, world generation, procedures and triggers.
 | Item | Value |
 |---|---|
 | Archive | `build/dist/generator-fabric-1.21.11.zip` |
-| Size | 1,238,390 bytes |
+| Size | 1,238,241 bytes |
 | Entries | 2000 |
-| SHA-256 | `CF39B7E28EC54043C84AF68D9D5E7157A529E9AD6BB79E810BA45928F4F170C3` |
+| SHA-256 | `C76908BCF2189732A7D0A6A2A87AD64F7AFEF9206710FC4667233E57A0725C76` |
 | License | CC BY-NC 4.0 |
+
+All wrapper files in the plugin and generated workspace template use the official public Gradle
+distribution URL. The packaged archive contains no local drive path, `file:///` URL or
+`Reference resources` reference in its text resources.
 
 ## 8. Validation commands
 

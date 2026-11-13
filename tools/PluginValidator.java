@@ -331,14 +331,18 @@ public final class PluginValidator {
         if (wrapper == null) {
             errors.add("missing workspace gradle-wrapper.properties");
         } else {
-            if (!wrapper.contains("distributionUrl=file\\:///")) {
-                errors.add("workspace wrapper must use a local file:/// Gradle distribution for offline tests");
+            String activeDistribution = wrapper.lines()
+                    .filter(line -> line.startsWith("distributionUrl="))
+                    .findFirst()
+                    .orElse("");
+            if (!activeDistribution.equals("distributionUrl=https\\://services.gradle.org/distributions/gradle-9.8.0-bin.zip")) {
+                errors.add("workspace wrapper must use the public Gradle distribution URL");
             }
-            if (!wrapper.contains("# distributionUrl=https\\://services.gradle.org/distributions/gradle-9.8.0-bin.zip")) {
-                errors.add("workspace wrapper must keep the public Gradle URL commented");
+            if (wrapper.contains("file\\:///")) {
+                errors.add("workspace wrapper must not contain a local file distribution URL");
             }
-            if (!wrapper.contains("validateDistributionUrl=false")) {
-                errors.add("workspace wrapper must disable distribution URL validation for local file URLs");
+            if (!wrapper.contains("validateDistributionUrl=true")) {
+                errors.add("workspace wrapper must validate the public Gradle distribution URL");
             }
         }
 

@@ -10,7 +10,7 @@ documented limitation with a workaround.
 | R1 | Medium | Generator API | Definitions follow the 2026.3 schema; future MCreator API changes may require definition updates. | Version range is explicit in `plugin.json`; validate against each MCreator release. | Open |
 | R2 | Medium | Minecraft API | Templates must track Minecraft 1.21.11 API changes. | API signatures verified with `javap`; templates covered by the validation suite. | Open |
 | R3 | Low | Mappings | Block/item/entity mapping tables originate from the 26.1.2 line. Registry entries that do not exist in 1.21.11 could be offered to users. | Mapping tables are reviewed when updating the generator; unresolved entries are reported. | Open |
-| R4 | Medium | Gradle | The wrapper defaults to a local Gradle distribution. | `tools/set-gradle-distribution.ps1` switches between local and public URLs. | By design |
+| R4 | Medium | Gradle | The wrapper uses the public Gradle distribution URL; offline environments may need a local archive. | `tools/set-gradle-distribution.ps1 -Mode Local -LocalZip <path> -TargetScope Plugin` switches only the plugin project; generated templates stay public. | By design |
 | R5 | Low | Configuration | Configuration code requires Forge Config API Port and Night Config. | Added conditionally when a configuration element is generated; declared in `fabric.mod.json`. | By design |
 | R6 | Low | Entity NBT | Fabric has no persistent per-entity data equivalent to NeoForge. | `entity_nbt_*` uses a session-local UUID map; values do not survive a world reload. | Limitation |
 | R7 | Low | Fluid tinting | `SimpleFluidRenderHandler` uses a fixed tint. | Biome-aware tinting is approximated with a static ARGB value. | Limitation |

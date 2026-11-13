@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026.3-1.0.12.1-beta
+
+### Changes
+
+- Gradle wrappers for the plugin and generated workspace template use the official public
+  distribution URL by default; no local drive path or `file:///` URL is stored in the source.
+- `tools/set-gradle-distribution.ps1` defaults to public mode and accepts a caller-supplied local
+  archive only for the plugin project. Generated workspace templates always keep the public URL.
+- Plugin and workspace wrapper validation now rejects local file URLs and requires public-URL
+  validation.
+- Validation scripts resolve the MCreator installation from `MCREATOR_HOME` or a single neighbouring
+  `MCreator*` directory instead of a fixed directory name.
+
 ## 2026.3-1.0.11
 
 ### Fixed

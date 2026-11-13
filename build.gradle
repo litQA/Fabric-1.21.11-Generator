@@ -161,16 +161,26 @@ tasks.register("checkPluginResources") {
         if (!new File(resources, "NOTICE.md").isFile()) {
             fatal("NOTICE.md with upstream attribution is required")
         }
-        def wrapperProps = new File(resources, "fabric-${mcVersion}/workspacebase/gradle/wrapper/gradle-wrapper.properties")
-        if (!wrapperProps.isFile()) {
-            fatal("missing workspace gradle-wrapper.properties")
-        }
-        def wrapperText = wrapperProps.getText("UTF-8")
-        if (!wrapperText.contains('distributionUrl=file\\:///')) {
-            fatal("workspace wrapper must point at the local Gradle distribution (file:///) for offline tests")
-        }
-        if (!wrapperText.contains('# distributionUrl=https\\://services.gradle.org/distributions/gradle-9.8.0-bin.zip')) {
-            fatal("workspace wrapper must keep the public Gradle URL commented")
+        def publicDistributionUrl = 'distributionUrl=https\\://services.gradle.org/distributions/gradle-9.8.0-bin.zip'
+        def wrapperFiles = [
+            "plugin wrapper"  : new File(project.rootDir, "gradle/wrapper/gradle-wrapper.properties"),
+            "workspace wrapper": new File(resources, "fabric-${mcVersion}/workspacebase/gradle/wrapper/gradle-wrapper.properties")
+        ]
+        wrapperFiles.each { label, wrapperFile ->
+            if (!wrapperFile.isFile()) {
+                fatal("missing ${label} gradle-wrapper.properties")
+            }
+            def wrapperText = wrapperFile.getText("UTF-8")
+            def activeDistribution = wrapperText.readLines().find { it.startsWith("distributionUrl=") }
+            if (activeDistribution != publicDistributionUrl) {
+                fatal("${label} must use the public Gradle distribution URL")
+            }
+            if (wrapperText.contains('file\\:///')) {
+                fatal("${label} must not contain a local file distribution URL")
+            }
+            if (!wrapperText.contains("validateDistributionUrl=true")) {
+                fatal("${label} must validate the public Gradle distribution URL")
+            }
         }
 
         // --- template references declared by definitions ----------------------

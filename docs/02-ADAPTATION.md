@@ -27,8 +27,9 @@ adjustments applied to the templates.
 - The access widener header uses the `named` namespace; an `official` header is rejected by Loom with
   `Namespace mismatch, expected named got official`.
 - Data-pack format is `94.1`; resource-pack format is handled by MCreator's workspace generation.
-- The Gradle wrapper points to a local distribution by default. `tools/set-gradle-distribution.ps1`
-  switches between local and public URLs, and the public URL is retained as a comment.
+- The Gradle wrapper uses the official public distribution URL. For offline development,
+  `tools/set-gradle-distribution.ps1` can switch only the plugin project to a caller-supplied local
+  archive; generated workspace templates always keep the public URL.
 
 ## 4. Compatibility adjustments
 
@@ -94,7 +95,10 @@ travel, world load/unload and command parameters. NeoForge-only implementations 
   export requirements;
 - workspace archive name kept as `modid`, which MCreator uses to locate the built jar during export.
 
-The Gradle wrapper uses a local distribution by default to keep repeated builds deterministic.
+The Gradle wrapper uses the official public distribution URL by default. The plugin-only
+`tools/set-gradle-distribution.ps1 -Mode Local -LocalZip <path>` helper can temporarily select a
+caller-supplied local archive for offline development; generated workspace templates are never
+written with a local URL.
 
 ## 5. Validation
 
