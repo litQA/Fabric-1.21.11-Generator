@@ -1,5 +1,15 @@
 # Changelog
 
+All notable changes to the Fabric 1.21.11 generator are recorded in this file.
+
+## 2026.3-1.0.12.2-beta
+
+### Changed
+
+- Validation and handoff documentation use anonymous test-workspace labels; private workspace
+  names, local example paths and personal metadata were removed.
+- Package metadata uses a project-level author name instead of an individual handle.
+
 ## 2026.3-1.0.12.1-beta
 
 ### Changes
@@ -27,7 +37,6 @@
 - Mixin refmaps now use the generated mod id (`<modid>.refmap.json`) instead of the literal
   `modid.refmap.json`, so exported jars load correctly outside the development environment.
 - Workspace archive name uses the generated mod id.
-All notable changes to the Fabric 1.21.11 generator are recorded in this file.
 
 ## 2026.3-1.0.9
 

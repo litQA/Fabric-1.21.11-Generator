@@ -61,12 +61,12 @@ modules with `javap`. The verification covered, among others:
 
 Four representative workspaces were generated and built with Gradle:
 
-| Workspace | Build | Runtime |
+| Test workspace | Build | Runtime |
 |---|---|---|
-| Better Melon | Passed | Client starts; world creation and item/block rendering verified |
-| Croparium Full | Passed | Client starts; block placement and configuration loading verified |
-| Croparium Lite | Passed | Client starts; crops, cross models and screens verified |
-| Everrose | Passed | Client starts; armour, items and custom models verified |
+| 1 | Passed | Client starts; world creation and item/block rendering verified |
+| 2 | Passed | Client starts; block placement and configuration loading verified |
+| 3 | Passed | Client starts; crops, cross models and screens verified |
+| 4 | Passed | Client starts; armour, items and custom models verified |
 
 The acceptance builds exercise blocks, items, tools, armour, crops, custom models, GUIs, menus,
 variables, configurations, fluids, world generation, procedures and triggers.
@@ -85,9 +85,9 @@ variables, configurations, fluids, world generation, procedures and triggers.
 | Item | Value |
 |---|---|
 | Archive | `build/dist/generator-fabric-1.21.11.zip` |
-| Size | 1,238,241 bytes |
+| Size | 1,238,240 bytes |
 | Entries | 2000 |
-| SHA-256 | `C76908BCF2189732A7D0A6A2A87AD64F7AFEF9206710FC4667233E57A0725C76` |
+| SHA-256 | `615DE1E91EBF10BBB2C6BF22D7B1992481F183A8BFA23F26D9316480B6BDF569` |
 | License | CC BY-NC 4.0 |
 
 All wrapper files in the plugin and generated workspace template use the official public Gradle

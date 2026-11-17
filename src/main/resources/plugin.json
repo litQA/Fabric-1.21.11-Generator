@@ -7,9 +7,9 @@
   ],
   "info": {
     "name": "Fabric 1.21.11 Generator",
-    "version": "2026.3-1.0.12.1-beta",
+    "version": "2026.3-1.0.12.2-beta",
     "description": "Fabric generator for Minecraft 1.21.11.",
-    "author": "LitQA",
+    "author": "Fabric 1.21.11 Generator contributors",
     "credits": "Goldorion, Pylo and contributors."
   }
 }
