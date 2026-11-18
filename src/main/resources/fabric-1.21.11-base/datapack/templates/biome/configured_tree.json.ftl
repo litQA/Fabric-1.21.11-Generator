@@ -46,13 +46,14 @@
   "type": "minecraft:tree",
   "config": {
     "ignore_vines": true,
+    "force_dirt": false,
     "minimum_size": {
       "type": "minecraft:two_layers_feature_size",
       "limit": ${minimum_size[0]},
       "lower_size": ${minimum_size[1]},
       "upper_size": ${minimum_size[2]}
     },
-	"below_trunk_provider": <@belowTrunkProvider "FALSE" mappedBlockToBlockStateProvider(mappedMCItemToBlockStateJSON(data.undergroundBlock))/>,
+    "dirt_provider": ${mappedBlockToBlockStateProvider(mappedMCItemToBlockStateJSON(data.undergroundBlock))},
     "trunk_provider": {
       "type": "minecraft:simple_state_provider",
       "state":

@@ -28,10 +28,7 @@
  # to be licensed under the GNU General Public License without this special
  # exception.
 -->
-
 <#-- @formatter:off -->
-<@javacompress>
-
 /*
  *    MCreator note: This file will be REGENERATED on each build.
  */
@@ -39,16 +36,25 @@
 <#assign signs = blocks?filter(e -> e.isSign())>
 package ${package}.init;
 
+import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.Identifier;
+
+import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeBuilder;
+
+<@javacompress>
 public class ${JavaModName}WoodTypes {
 	<#list signs as block>
 	public static final WoodType ${block.getModElement().getRegistryNameUpper()}_WOOD_TYPE = WoodTypeBuilder.copyOf(WoodType.OAK).register(Identifier.parse("${modid}:${block.getModElement().getRegistryName()}"), BlockSetType.OAK);
 	</#list>
 
 	public static void load() {
-	    <#list signs as block>
-	        BlockEntityType.<#if block.blockBase == "HangingSign">HANGING_</#if>SIGN.addValidBlock(${JavaModName}Blocks.${block.getModElement().getRegistryNameUpper()});
-	        BlockEntityType.<#if block.blockBase == "HangingSign">HANGING_</#if>SIGN.addValidBlock(${JavaModName}Blocks.${block.getWallRegistryNameUpper()});
-	    </#list>
+		<#list signs as block>
+		BlockEntityType.<#if block.blockBase == "HangingSign">HANGING_</#if>SIGN.addSupportedBlock(${JavaModName}Blocks.${block.getModElement().getRegistryNameUpper()});
+		BlockEntityType.<#if block.blockBase == "HangingSign">HANGING_</#if>SIGN.addSupportedBlock(${JavaModName}Blocks.${block.getWallRegistryNameUpper()});
+		</#list>
 	}
-}</@javacompress>
+}
+</@javacompress>
 <#-- @formatter:on -->
