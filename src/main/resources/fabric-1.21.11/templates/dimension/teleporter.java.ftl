@@ -23,12 +23,39 @@
 
 package ${package}.world.teleporter;
 
+import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.ai.village.poi.PoiRecord;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.NetherPortalBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.util.Mth;
+import net.minecraft.util.BlockUtil;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+
+import ${package}.init.${JavaModName}Blocks;
+
+import java.util.Optional;
+import java.util.Comparator;
+
+import com.google.common.collect.ImmutableSet;
+
 public class ${name}Teleporter {
 
 	public static Holder<PoiType> poi = null;
 
 	public static void registerPointOfInterest() {
-		PoiType poiType = PoiHelper.register(Identifier.parse("${modid}:${registryname}_portal"), 0, 1, ImmutableSet.copyOf(${JavaModName}Blocks.${REGISTRYNAME}_PORTAL.getStateDefinition().getPossibleStates()));
+		PoiType poiType = PointOfInterestHelper.register(Identifier.parse("${modid}:${registryname}_portal"), 0, 1, ImmutableSet.copyOf(${JavaModName}Blocks.${REGISTRYNAME}_PORTAL.getStateDefinition().getPossibleStates()));
 		poi = BuiltInRegistries.POINT_OF_INTEREST_TYPE.wrapAsHolder(poiType);
 	}
 
@@ -40,11 +67,12 @@ public class ${name}Teleporter {
 
 	${mcc.getMethod("net.minecraft.world.level.portal.PortalForcer", "findClosestPortalPosition", "BlockPos", "boolean", "WorldBorder")
 		 .replace("PoiTypes.NETHER_PORTAL", "poi.unwrapKey().get()")
-		 .replace("Comparator.comparingDouble", "Comparator.<BlockPos>comparingDouble")}
+		 .replace("Comparator.comparingDouble", "Comparator.<BlockPos>comparingDouble")
+		 .replace("this.level.getBlockState(blockPos)", "this.level.getBlockState((BlockPos) blockPos)")}
 
 	${mcc.getMethod("net.minecraft.world.level.portal.PortalForcer", "createPortal", "BlockPos", "Direction.Axis")
 		 .replace("Blocks.OBSIDIAN", mappedBlockToBlock(data.portalFrame)?string)
-		 .replace(",portalBlockState,18);", ", portalBlockState, 18);\nthis.level.getPoiManager().add(mutable, poi);")
+		 .replace("this.level.setBlock(mutableBlockPos, blockState2, 18);", "this.level.setBlock(mutableBlockPos, blockState2, 18);\nthis.level.getPoiManager().add(mutableBlockPos, poi);")
 		 .replace("Blocks.NETHER_PORTAL", JavaModName + "Blocks." + REGISTRYNAME + "_PORTAL")}
 
 	${mcc.getMethod("net.minecraft.world.level.portal.PortalForcer", "canHostFrame", "BlockPos", "BlockPos.MutableBlockPos", "Direction", "int")}
@@ -54,5 +82,4 @@ public class ${name}Teleporter {
 		return blockstate.canBeReplaced() && blockstate.getFluidState().isEmpty();
 	}
 }
-
 <#-- @formatter:on -->
