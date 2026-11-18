@@ -26,6 +26,16 @@
  */
 
 package ${package}.init;
+import java.util.function.Supplier;
+import java.util.function.Predicate;
+import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
+import com.google.common.collect.ImmutableSet;
+
+import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 
 public class ${JavaModName}VillagerProfessions {
 
@@ -55,7 +65,7 @@ public class ${JavaModName}VillagerProfessions {
 				continue;
 			}
 
-			PoiType poiType = PoiHelper.register(Identifier.fromNamespaceAndPath("${modid}", name), 1, 1, ImmutableSet.copyOf(block.getStateDefinition().getPossibleStates()));
+			PoiType poiType = PointOfInterestHelper.register(Identifier.fromNamespaceAndPath("${modid}", name), 1, 1, ImmutableSet.copyOf(block.getStateDefinition().getPossibleStates()));
 				entry.getValue().poiType = BuiltInRegistries.POINT_OF_INTEREST_TYPE.wrapAsHolder(poiType);
 		}
 	}
@@ -67,18 +77,9 @@ public class ${JavaModName}VillagerProfessions {
 
 		return Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, Identifier.fromNamespaceAndPath(${JavaModName}.MODID, name),
 		        new VillagerProfession(Component.translatable("entity.villager." + ${JavaModName}.MODID + "." + name),
-            	        poiPredicate, poiPredicate, ImmutableSet.of(), ImmutableSet.of(), soundEvent.get(), Int2ObjectMap.ofEntries(
-            			Int2ObjectMap.entry(1, tradeSetResourceKey(name, 1)),
-            			Int2ObjectMap.entry(2, tradeSetResourceKey(name, 2)),
-            			Int2ObjectMap.entry(3, tradeSetResourceKey(name, 3)),
-            			Int2ObjectMap.entry(4, tradeSetResourceKey(name, 4)),
-            			Int2ObjectMap.entry(5, tradeSetResourceKey(name, 5))
-                )));
+            	        poiPredicate, poiPredicate, ImmutableSet.of(), ImmutableSet.of(), soundEvent.get()));
 	}
 
-	private static ResourceKey<TradeSet> tradeSetResourceKey(String name, int level) {
-		return ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath("${modid}", name + "/level_" + level));
-	}
 
 	private static class ProfessionPoiType {
 
